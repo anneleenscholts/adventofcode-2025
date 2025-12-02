@@ -17,6 +17,7 @@ const searchPattern = (number) => {
     const pattern = stringNumber.slice(0, allTheNumbers[k]);
     const repeatNumberOfTimes = stringNumber.length / pattern.length;
     if (repeatNumberOfTimes < 2) {
+      // if (repeatNumberOfTimes !== 2) { // PART 1
       continue;
     }
     let newString = "";
@@ -25,7 +26,7 @@ const searchPattern = (number) => {
     }
     if (parseInt(newString) === parseInt(number)) {
       myPatternNumbers.push(parseInt(number));
-      break;
+      break; // Remove this for PART 1
     }
   }
   return myPatternNumbers;
