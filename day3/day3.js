@@ -1,18 +1,46 @@
 import { readFileToArray } from "../utils/utils.js";
 
 const findHighestJoltage = (inputString) => {
-  console.log(inputString);
-  let max = 0;
-  for (let i = 0; i < inputString.length - 1; i++) {
-    for (let j = i + 1; j < inputString.length; j++) {
-      let number = inputString[i] + inputString[j];
-      if (parseInt(number) > max) {
-        max = parseInt(number);
-      }
+  const TARGET_LENGTH = 12;
+  const memo = new Map();
+
+  const findBestSubsequence = (position, digitsNeeded) => {
+    const key = `${position},${digitsNeeded}`;
+    if (memo.has(key)) {
+      return memo.get(key);
     }
-  }
-  console.log(max);
-  return max;
+
+    if (digitsNeeded === 0) {
+      return "";
+    }
+
+    const digitsRemaining = inputString.length - position;
+    if (digitsRemaining < digitsNeeded) {
+      return null; // Impossible
+    }
+
+    const withCurrent =
+      inputString[position] +
+      findBestSubsequence(position + 1, digitsNeeded - 1);
+
+    const withoutCurrent = findBestSubsequence(position + 1, digitsNeeded);
+
+    let result;
+    if (withoutCurrent === null) {
+      result = withCurrent;
+    }
+    if (withCurrent === null) {
+      result = withoutCurrent;
+    }
+    result = withCurrent > withoutCurrent ? withCurrent : withoutCurrent;
+
+    memo.set(key, result);
+    return result;
+  };
+
+  const result = findBestSubsequence(0, TARGET_LENGTH);
+  console.log(result);
+  return parseInt(result);
 };
 
 const main = () => {
