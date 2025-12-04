@@ -45,6 +45,7 @@ const isAccessible = (row, col, grid) => {
   return adjacentRollCount < MAX_ADJACENT_ROLLS;
 };
 
+// ===== Part 1 =====
 const findRollsToAccess = (grid) => {
   let count = 0;
 
@@ -59,9 +60,47 @@ const findRollsToAccess = (grid) => {
   return count;
 };
 
+// ===== Part 2 =====
+const findAndRemoveAccessibleRolls = (grid) => {
+  const positionsToRemove = [];
+
+  for (let row = 0; row < grid.length; row++) {
+    for (let col = 0; col < grid[row].length; col++) {
+      if (isAccessible(row, col, grid)) {
+        positionsToRemove.push([row, col]);
+      }
+    }
+  }
+
+  for (const [row, col] of positionsToRemove) {
+    grid[row] =
+      grid[row].substring(0, col) + "x" + grid[row].substring(col + 1);
+  }
+
+  return positionsToRemove.length;
+};
+
+const removeAllAccessibleRolls = (grid) => {
+  let totalRemoved = 0;
+  let removedThisRound = 0;
+
+  do {
+    removedThisRound = findAndRemoveAccessibleRolls(grid);
+    totalRemoved += removedThisRound;
+  } while (removedThisRound > 0);
+
+  return totalRemoved;
+};
+
 const main = () => {
   const input = readFileToArray("input.txt");
-  const count = findRollsToAccess(input);
+
+  // Part 1: Count currently accessible rolls
+  // const count = findRollsToAccess(input);
+
+  // Part 2: Iteratively remove all accessible rolls
+  const count = removeAllAccessibleRolls(input);
+
   console.log("count", count);
 };
 
