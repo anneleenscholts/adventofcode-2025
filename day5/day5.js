@@ -12,19 +12,42 @@ const checkIfIngredientInRange = (ingredient, ranges) => {
 };
 
 const whichIngredientsAreFresh = (ranges) => {
-  let numberOfFresh = 0;
-  for (let i = 0; i < ranges.length; i++) {
-    const [start, finish] = ranges[i].split("-");
-    let bla = parseInt(finish) - parseInt(start);
-    numberOfFresh = numberOfFresh + bla;
+  const parsedRanges = ranges.map((range) => {
+    const [start, finish] = range.split("-");
+    return {
+      start: parseInt(start),
+      end: parseInt(finish),
+    };
+  });
+
+  parsedRanges.sort((a, b) => a.start - b.start);
+
+  const mergedRanges = [];
+  let currentRange = parsedRanges[0];
+
+  for (let i = 1; i < parsedRanges.length; i++) {
+    const nextRange = parsedRanges[i];
+    if (nextRange.start <= currentRange.end + 1) {
+      currentRange.end = Math.max(currentRange.end, nextRange.end);
+    } else {
+      mergedRanges.push(currentRange);
+      currentRange = nextRange;
+    }
   }
-  console.log("listoffresh", numberOfFresh);
+
+  mergedRanges.push(currentRange);
+  let numberOfFresh = 0;
+  for (let i = 0; i < mergedRanges.length; i++) {
+    numberOfFresh += mergedRanges[i].end - mergedRanges[i].start + 1;
+  }
+  return numberOfFresh;
 };
 
 function main() {
   let count = 0;
   const ingredients = readFileToArray("day5/ingredients.txt");
   const rangeOfFreshFood = readFileToArray("day5/range.txt");
+  // PART 1
   for (let i = 0; i < ingredients.length; i++) {
     const isInRange = checkIfIngredientInRange(
       parseInt(ingredients[i]),
@@ -34,8 +57,10 @@ function main() {
       count = count + 1;
     }
   }
-  whichIngredientsAreFresh(rangeOfFreshFood);
-  console.log("total", count);
+  // PART 2
+  const numberOfFresh = whichIngredientsAreFresh(rangeOfFreshFood);
+  console.log("freshFound", count);
+  console.log("numberOfFreshTotal", numberOfFresh);
 }
 
 main();
