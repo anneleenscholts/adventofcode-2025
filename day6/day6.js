@@ -40,18 +40,33 @@ const calculateTotal = (input) => {
   return grandTotal;
 };
 
-const factor = (inputArr) => {
+const factor = (inputArr, maxLength) => {
   let total = 1;
-  for (let i = 0; i < inputArr.length; i++) {
-    total = total * parseInt(inputArr[i]);
+  for (let k = maxLength - 1; k >= 0; k--) {
+    let newNumber = "";
+    for (let i = 0; i < inputArr.length; i++) {
+      console.log(inputArr[i]);
+      if (inputArr[i][k]) {
+        console.log(inputArr[i][k]);
+        newNumber = newNumber + inputArr[i][k];
+      }
+    }
+    console.log(newNumber);
+    total = total * parseInt(newNumber);
   }
   return total;
 };
 
-const sum = (inputArr) => {
+const sum = (inputArr, maxLength) => {
   let total = 0;
-  for (let i = 0; i < inputArr.length; i++) {
-    total = total + parseInt(inputArr[i]);
+  for (let k = maxLength - 1; k >= 0; k--) {
+    let newNumber = "";
+    for (let i = 0; i < inputArr.length; i++) {
+      if (inputArr[i][k]) {
+        newNumber = newNumber + inputArr[i][k];
+      }
+    }
+    total = total + parseInt(newNumber);
   }
   return total;
 };
